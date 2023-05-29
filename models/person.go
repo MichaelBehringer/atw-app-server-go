@@ -6,15 +6,8 @@ type Person struct {
 	Firstname string `json:"firstname"`
 }
 
-type YearCityResult struct {
-	Lastname        string `json:"lastname"`
-	FlaschenFuellen int    `json:"flaschenFuellen"`
-	FlaschenTuev    int    `json:"flaschenTuev"`
-	MaskenPruefen   int    `json:"maskenPruefen"`
-	MaskenReinigen  int    `json:"maskenReinigen"`
-	LaPruefen       int    `json:"laPruefen"`
-	LaReinigen      int    `json:"laReinigen"`
-	GeraetePruefen  int    `json:"geraetePruefen"`
-	GeraeteReinigen int    `json:"geraeteReinigen"`
-	DateWork        string `json:"dateWork"`
+type AuthPerson struct {
+	PersNo     int    `json:"persNo"`
+	Username   string `json:"username"`
+	FunctionNo int    `json:"functionNo"`
 }

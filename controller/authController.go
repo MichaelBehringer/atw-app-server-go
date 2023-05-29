@@ -2,8 +2,8 @@ package controller
 
 import (
 	. "ffAPI/models"
-	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -34,43 +34,25 @@ func DoLogin(login Login, c *gin.Context) AcessToken {
 	return AcessToken{AccessToken: s}
 }
 
-func CheckToken(tokenStr string) string {
-	isValid, claims := ParseToken(tokenStr)
-	if !isValid {
-		return "eroor"
-	} else {
-
-	}
-	// claims := jwt.MapClaims{}
-	// tkn, err := jwt.ParseWithClaims(paramToken, claims, func(token *jwt.Token) (interface{}, error) {
-	// 	return []byte("my_secret_key"), nil
-	// })
-
-	// if err != nil {
-	// 	if err == jwt.ErrSignatureInvalid {
-	// 		return "ErrSignatureInvalid"
-	// 	}
-	// 	fmt.Printf(err.Error())
-
-	// 	if !tkn.Valid {
-	// 		fmt.Printf("invalid")
-	// 	}
-
-	// 	return "StatusBadRequest"
-	// }
-	// if !tkn.Valid {
-	// 	return "StatusUnauthorized"
-	// }
-	// ... error handling
-
-	// do something with decoded claims
-	for key, val := range claims {
-		fmt.Printf("Key: %v, value: %v\n", key, val)
-	}
-	return "erfolg"
+func CheckToken(c *gin.Context) AuthPerson {
+	_, claims := ExtractToken(c)
+	username, _ := claims["user"].(string)
+	var person AuthPerson
+	ExecuteSQLRow("SELECT USERNAME, PERS_NO, FUNCTION_NO FROM pers WHERE USERNAME=?", username).Scan(&person.Username, &person.PersNo, &person.FunctionNo)
+	return person
 }
 
-func ParseToken(tokenStr string) (bool, jwt.MapClaims) {
+func ExtractToken(c *gin.Context) (bool, jwt.MapClaims) {
+	h := AuthHeader{}
+	c.ShouldBindHeader(&h)
+	idTokenHeader := strings.Split(h.IDToken, "Bearer ")
+	if len(idTokenHeader) < 2 {
+		return false, nil
+	}
+	return parseToken(idTokenHeader[1])
+}
+
+func parseToken(tokenStr string) (bool, jwt.MapClaims) {
 	claims := jwt.MapClaims{}
 	tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte("my_secret_key"), nil

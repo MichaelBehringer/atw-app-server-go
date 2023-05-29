@@ -6,6 +6,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func GetCities() []City {
+	results := ExecuteSQL("select CITY_NO, CITY_NAME from atemschutzpflegestelle_cities where IS_ACTIVE=1 order by CITY_NAME")
+	cities := []City{}
+	for results.Next() {
+		var city City
+		results.Scan(&city.CityNo, &city.Name)
+		cities = append(cities, city)
+	}
+	return cities
+}
+
 func GetYearCityResults(cityNo int, year int) []YearCityResult {
 	statement := `SELECT
 	p.LASTNAME,

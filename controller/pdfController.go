@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	. "ffAPI/models"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -15,26 +14,19 @@ import (
 
 func CreateCityPDFs(cityNos []int, year int) (string, string) {
 	currentTime := time.Now()
-	timeString := currentTime.Format("20060102150405")
-	dateString := currentTime.Format("20060102")
+	timeString := currentTime.Format("20060102_150405")
+	// dateString := currentTime.Format("20060102")
 	os.Mkdir("generated/"+timeString, 0755)
 	pathZip := "generated/" + timeString + "/"
-	fileZip := "Auswertung_" + dateString + ".zip"
-	// zipFile, _ := os.Create(filenameZip)
-	// defer zipFile.Close()
-	// zipWriter := zip.NewWriter(zipFile)
-	// defer zipWriter.Close()
+	fileZip := "Auswertung_" + timeString + ".zip"
 	zipData := new(bytes.Buffer)
 	zipWriter := zip.NewWriter(zipData)
 
 	for _, cityNo := range cityNos {
 		cityName := GetCityname(cityNo)
-		fmt.Printf(cityName + "Wird gegönnt")
 		filename := cityName + ".pdf"
-		fmt.Printf(filename)
 		pdf := createCityPDF(filename, cityName, cityNo, year)
 		addPDFToZip(zipWriter, filename, pdf)
-		// addFileToZip(zipWriter, filename)
 	}
 
 	zipWriter.Close()
@@ -54,13 +46,8 @@ func createCityPDF(filename string, cityName string, cityNo int, year int) *fpdf
 
 	// Füge eine neue Seite hinzu
 	pdf.AddPage()
-
 	mainData(pdf, yearCityResults, yearCityResultsSum)
 
-	// Definiere die Tabellendaten
-	// pdf.OutputFileAndClose(filename)
-	// fmt.Printf(err.Error())
-	fmt.Printf("ich habe meinen soll erfüllt\n\n")
 	return pdf
 }
 
@@ -121,7 +108,6 @@ func mainData(pdf *fpdf.Fpdf, yearCityResults []YearCityResult, yearCityResultsS
 		pdf.CellFormat(15.75, 7, strconv.Itoa(yearCityResult.GeraeteReinigen), "1", 0, "C", false, 0, "")
 		pdf.CellFormat(31.5, 7, yearCityResult.DateWork, "1", 0, "L", false, 0, "")
 		pdf.CellFormat(31.5, 7, yearCityResult.Lastname, "1", 0, "L", false, 0, "")
-		fmt.Printf(yearCityResult.Lastname)
 		pdf.Ln(7)
 	}
 	pdf.CellFormat(189, 2, "", "1", 0, "L", false, 0, "")
@@ -143,39 +129,6 @@ func mainData(pdf *fpdf.Fpdf, yearCityResults []YearCityResult, yearCityResultsS
 	pdf.CellFormat(31.5, 7, "", "1", 0, "L", true, 0, "")
 }
 
-// func addFileToZip(zipWriter *zip.Writer, filePath string) error {
-// 	file, err := os.Open(filePath)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer file.Close()
-
-// 	// ZIP-Datei-Eintrag erstellen
-// 	fileInfo, err := file.Stat()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	header, err := zip.FileInfoHeader(fileInfo)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	header.Name = filePath
-
-// 	// ZIP-Datei-Eintrag schreiben
-// 	writer, err := zipWriter.CreateHeader(header)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	// Dateiinhalt zur ZIP-Datei schreiben
-// 	_, err = io.Copy(writer, file)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
 func addPDFToZip(zipWriter *zip.Writer, filename string, pdf *fpdf.Fpdf) error {
 	pdfData := new(bytes.Buffer)
 
@@ -183,17 +136,14 @@ func addPDFToZip(zipWriter *zip.Writer, filename string, pdf *fpdf.Fpdf) error {
 	if err != nil {
 		return err
 	}
-
 	fileWriter, err := zipWriter.Create(filename)
 	if err != nil {
 		return err
 	}
-
 	_, err = io.Copy(fileWriter, pdfData)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -208,6 +158,5 @@ func saveZipToFile(zipData []byte, filename string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

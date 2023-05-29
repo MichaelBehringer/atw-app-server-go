@@ -12,3 +12,7 @@ type ResponseText struct {
 type AcessToken struct {
 	AccessToken string `json:"accessToken"`
 }
+
+type AuthHeader struct {
+	IDToken string `header:"Authorization"`
+}

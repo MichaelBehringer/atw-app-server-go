@@ -7,14 +7,11 @@ import (
 )
 
 func GetPersons() []Person {
-	results := ExecuteSQL("SELECT PERS_NO, LASTNAME, FIRSTNAME from pers")
+	results := ExecuteSQL("select PERS_NO, FIRSTNAME, LASTNAME from pers where IS_ACTIVE=1 order by LASTNAME")
 	persons := []Person{}
 	for results.Next() {
 		var pers Person
-		err = results.Scan(&pers.PersNo, &pers.Lastname, &pers.Firstname)
-		if err != nil {
-			panic(err.Error())
-		}
+		results.Scan(&pers.PersNo, &pers.Firstname, &pers.Lastname)
 		persons = append(persons, pers)
 	}
 	return persons
