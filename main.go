@@ -29,7 +29,10 @@ func main() {
 	router.GET("/checkToken", AuthUser(), checkToken)
 
 	router.GET("/pers", AuthUser(), pers)
+	router.GET("/persExtra", AuthUser(), persExtra)
 	router.GET("/cities", AuthUser(), cities)
+	router.GET("/function", AuthUser(), function)
+	router.POST("/search", AuthUser(), search)
 
 	router.GET("/file", file)
 
@@ -59,9 +62,26 @@ func pers(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, persons)
 }
 
+func persExtra(c *gin.Context) {
+	persons := GetPersonsExtra()
+	c.IndentedJSON(http.StatusOK, persons)
+}
+
+func function(c *gin.Context) {
+	functions := GetFunctions()
+	c.IndentedJSON(http.StatusOK, functions)
+}
+
 func cities(c *gin.Context) {
 	cities := GetCities()
 	c.IndentedJSON(http.StatusOK, cities)
+}
+
+func search(c *gin.Context) {
+	var searchParam SearchParam
+	c.BindJSON(&searchParam)
+	searchResult := GetSearchResult(searchParam)
+	c.IndentedJSON(http.StatusOK, searchResult)
 }
 
 func file(c *gin.Context) {
