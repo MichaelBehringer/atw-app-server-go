@@ -22,7 +22,7 @@ func main() {
 	config.AllowAllOrigins = true
 	config.AllowHeaders = []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control"}
 
-	router.Use(static.Serve("/", static.LocalFile("./generated/build", true)))
+	router.Use(static.Serve("/", static.LocalFile("ressources/build", true)))
 
 	router.Use(cors.New(config))
 	router.POST("/login", login)
@@ -36,7 +36,7 @@ func main() {
 	m := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("ffwemding.dynv6.net"),
-		Cache:      autocert.DirCache("/mytemp"),
+		Cache:      autocert.DirCache("ressources/autoCertCache"),
 	}
 
 	autotls.RunWithManager(router, &m)

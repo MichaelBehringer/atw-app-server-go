@@ -15,9 +15,7 @@ import (
 func CreateCityPDFs(cityNos []int, year int) (string, string) {
 	currentTime := time.Now()
 	timeString := currentTime.Format("20060102_150405")
-	// dateString := currentTime.Format("20060102")
-	os.Mkdir("generated/pdfs/"+timeString, 0755)
-	pathZip := "generated/pdfs/" + timeString + "/"
+	pathZip := "generated/pdfs/"
 	fileZip := "Auswertung_" + timeString + ".zip"
 	zipData := new(bytes.Buffer)
 	zipWriter := zip.NewWriter(zipData)
