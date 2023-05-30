@@ -8,7 +8,9 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 func main() {
@@ -30,7 +32,14 @@ func main() {
 	router.GET("/cities", AuthUser(), cities)
 
 	router.GET("/file", file)
-	router.Run(":8080")
+
+	m := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist("ffwemding.dynv6.net"),
+		Cache:      autocert.DirCache("/mytemp"),
+	}
+
+	autotls.RunWithManager(router, &m)
 }
 
 func login(c *gin.Context) {
