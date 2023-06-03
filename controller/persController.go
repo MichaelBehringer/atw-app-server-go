@@ -38,3 +38,29 @@ func GetFunctions() []Function {
 	}
 	return functions
 }
+
+func doesUsernameExists(person Person) bool {
+	var doesExist bool
+	ExecuteSQLRow("SELECT COUNT(*) FROM pers WHERE USERNAME=?", person.Username).Scan(&doesExist)
+	return doesExist
+}
+
+func CreateUser(person Person) bool {
+	if doesUsernameExists(person) {
+		return false
+	}
+	ExecuteDDL("INSERT INTO pers (FIRSTNAME, LASTNAME, USERNAME, PASSWORD, FUNCTION_NO, CITY_NO, IS_ACTIVE) VALUES(?,?,?,?,?,?,1)", person.Firstname, person.Lastname, person.Username, person.Password, person.FunctionNo, person.CityNo)
+	return true
+}
+
+func UpdateUser(person Person) bool {
+	if doesUsernameExists(person) {
+		return false
+	}
+	ExecuteDDL("UPDATE pers SET FIRSTNAME = ?, LASTNAME = ?, FUNCTION_NO = ?, CITY_NO = ?, USERNAME = ? where PERS_NO = ?", person.Firstname, person.Lastname, person.FunctionNo, person.CityNo, person.Username, person.PersNoKey)
+	return true
+}
+
+func DeleteUser(person PersonDelete) {
+	ExecuteDDL("UPDATE pers SET IS_ACTIVE = 0 where PERS_NO = ?", person.PersNo)
+}

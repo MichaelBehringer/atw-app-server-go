@@ -1,9 +1,14 @@
 package models
 
 type Person struct {
-	PersNo    int    `json:"persNo"`
-	Lastname  string `json:"lastname"`
-	Firstname string `json:"firstname"`
+	PersNoKey  int    `json:"key"`
+	PersNo     int    `json:"persNo"`
+	Lastname   string `json:"lastname"`
+	Firstname  string `json:"firstname"`
+	FunctionNo int    `json:"functionNo"`
+	CityNo     int    `json:"cityNo"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
 }
 
 type PersonExtra struct {
@@ -15,6 +20,10 @@ type PersonExtra struct {
 	FunctionName string `json:"functionName"`
 	CityNo       int    `json:"cityNo"`
 	CityName     string `json:"cityName"`
+}
+
+type PersonDelete struct {
+	PersNo int `json:"userNo"`
 }
 
 type AuthPerson struct {

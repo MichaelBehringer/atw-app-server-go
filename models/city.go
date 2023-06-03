@@ -5,6 +5,11 @@ type City struct {
 	Name   string `json:"name"`
 }
 
+type UpdateCityObj struct {
+	CityNo int    `json:"key"`
+	Name   string `json:"cityName"`
+}
+
 type YearCityResult struct {
 	Lastname        string `json:"lastname"`
 	FlaschenFuellen int    `json:"flaschenFuellen"`

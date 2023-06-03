@@ -80,3 +80,11 @@ func GetCityname(cityNo int) string {
 	ExecuteSQLRow(statement, cityNo).Scan(&cityName)
 	return cityName
 }
+
+func UpdateCity(city UpdateCityObj) {
+	ExecuteDDL("UPDATE atemschutzpflegestelle_cities SET CITY_NAME = ? where CITY_NO = ?", city.Name, city.CityNo)
+}
+
+func DeleteCity(city City) {
+	ExecuteDDL("UPDATE atemschutzpflegestelle_cities SET IS_ACTIVE = 0 where CITY_NO = ?", city.CityNo)
+}

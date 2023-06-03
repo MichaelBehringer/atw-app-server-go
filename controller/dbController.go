@@ -33,3 +33,8 @@ func ExecuteSQL(statement string, params ...interface{}) *sql.Rows {
 func ExecuteSQLRow(statement string, params ...interface{}) *sql.Row {
 	return db.QueryRow(statement, params...)
 }
+
+func ExecuteDDL(statement string, params ...interface{}) sql.Result {
+	result, _ := db.Exec(statement, params...)
+	return result
+}

@@ -34,6 +34,18 @@ func main() {
 	router.GET("/function", AuthUser(), function)
 	router.POST("/search", AuthUser(), search)
 
+	router.PUT("/createEntry", AuthUser(), createEntry)
+	router.DELETE("/deleteEntry", AuthUser(), deleteEntry)
+	router.POST("/updateEntry", AuthUser(), updateEntry)
+	router.PUT("/createExtraEntry", AuthUser(), createExtraEntry)
+
+	router.PUT("/createUser", AuthUser(), createUser)
+	router.POST("/updateUser", AuthUser(), updateUser)
+	router.DELETE("/deleteUser", AuthUser(), deleteUser)
+
+	router.POST("/updateCity", AuthUser(), updateCity)
+	router.DELETE("/deleteCity", AuthUser(), deleteCity)
+
 	router.GET("/file", file)
 
 	m := autocert.Manager{
@@ -82,6 +94,83 @@ func search(c *gin.Context) {
 	c.BindJSON(&searchParam)
 	searchResult := GetSearchResult(searchParam)
 	c.IndentedJSON(http.StatusOK, searchResult)
+}
+
+func createEntry(c *gin.Context) {
+	var newEntry EntryObj
+	c.BindJSON(&newEntry)
+	// fmt.Println(err.Error())
+	// fmt.Println(strings.Split(newEntry.DateWork, "T")[0])
+	// fmt.Println(newEntry.FlaschenFuellen)
+	CreateEntry(newEntry)
+	c.Status(http.StatusOK)
+	// c.IndentedJSON(http.StatusOK, res)
+	// tokenRes := CheckToken(c)
+	// c.IndentedJSON(http.StatusOK, tokenRes)
+}
+
+func deleteEntry(c *gin.Context) {
+	var removeEntry EntryObj
+	c.BindJSON(&removeEntry)
+	DeleteEntry(removeEntry)
+	c.Status(http.StatusOK)
+}
+
+func updateEntry(c *gin.Context) {
+	var updateEntryObj EntryObj
+	c.BindJSON(&updateEntryObj)
+	UpdateEntry(updateEntryObj)
+	c.Status(http.StatusOK)
+}
+
+func createExtraEntry(c *gin.Context) {
+	var extraEntry EntryObj
+	c.BindJSON(&extraEntry)
+	CreateExtraEntry(extraEntry)
+	c.Status(http.StatusOK)
+}
+
+func createUser(c *gin.Context) {
+	var person Person
+	c.BindJSON(&person)
+	success := CreateUser(person)
+	if success {
+		c.Status(http.StatusOK)
+	} else {
+		c.Status(http.StatusBadRequest)
+	}
+}
+
+func updateUser(c *gin.Context) {
+	var person Person
+	c.BindJSON(&person)
+	success := UpdateUser(person)
+	if success {
+		c.Status(http.StatusOK)
+	} else {
+		c.Status(http.StatusBadRequest)
+	}
+}
+
+func deleteUser(c *gin.Context) {
+	var personDelete PersonDelete
+	c.BindJSON(&personDelete)
+	DeleteUser(personDelete)
+	c.Status(http.StatusOK)
+}
+
+func updateCity(c *gin.Context) {
+	var city UpdateCityObj
+	c.BindJSON(&city)
+	UpdateCity(city)
+	c.Status(http.StatusOK)
+}
+
+func deleteCity(c *gin.Context) {
+	var city City
+	c.BindJSON(&city)
+	DeleteCity(city)
+	c.Status(http.StatusOK)
 }
 
 func file(c *gin.Context) {
